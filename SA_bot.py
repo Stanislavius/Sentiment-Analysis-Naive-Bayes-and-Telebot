@@ -22,7 +22,7 @@ def code_message(message_text):
     
     for i in range(len(message_text)):
         if message_text[i] in words:
-            X[list(words).index(message_text[i])] +=1
+            X[0][list(words).index(message_text[i])] +=1
     return X
 
 def classify_text(message_text):
