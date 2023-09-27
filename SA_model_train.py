@@ -5,50 +5,36 @@ from sklearn.naive_bayes import ComplementNB
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
 from sklearn.naive_bayes import GaussianNB
 import pickle
-
-def stop_word(word):
-    return word in stopwords.words("english")
-
-def tokenize(message):
-    line = message.lower()
-    res = line.replace('.', '').replace('?','').replace('!', '').split()
-    stem = WordNetLemmatizer()
-    res1 = res
-    res = []
-    for word in res1:
-        res.append(stem.lemmatize(word))
-    return res
+from words_proc import *
 
 def load():
     encoding = "latin-1"
     path = "data"
     files = ["test", "train", "val"]
-    loaded = []
+    texts = []
     y = []
     for i in range(len(files)):
         path = "data" + "/"+files[i] + "_text.txt"
         file = open(path, mode = "r", encoding = encoding)
         for line in file.readlines():
-            loaded.append(tokenize(line))
+            texts.append(tokenize(line))
                 
         path = "data" + "/"+files[i] + "_labels.txt"
         file = open(path, mode = "r", encoding = encoding)
         for label in file.readlines():
             y.append(int(label))
-    return loaded, y
+    return texts, y
 
-def my_vectorizer(loaded, y):
+def my_vectorizer(texts, y):
     words = {}
     count = {}
     total_count = {}
     class_count = {}
     temp = 0
-    for i in range(len(loaded)):
-        for word in loaded[i]:
+    for i in range(len(texts)):
+        for word in texts[i]:
             if(word not in class_count):
                 class_count[word] = [0, 0, 0]
                 class_count[word][y[i]] = 1
@@ -91,9 +77,9 @@ def my_vectorizer(loaded, y):
 
     total_words = len(words)
     print("Total_words = %i" % total_words)
-    result = np.zeros(shape = (len(loaded), total_words), dtype = 'i4')
-    for i in range(len(loaded)):
-        for word in loaded[i]:
+    result = np.zeros(shape = (len(texts), total_words), dtype = 'i4')
+    for i in range(len(texts)):
+        for word in texts[i]:
             if(word in words):
                 class_num = y[i]
                 if(class_count[word][class_num] < 0.45):
@@ -102,8 +88,8 @@ def my_vectorizer(loaded, y):
                     result[i][words[word]] = 1
     return result, words
 
-loaded, y = load()
-X, words = my_vectorizer(loaded, y)
+texts, y = load()
+X, words = my_vectorizer(texts, y)
 classes = {}
 for i in range(len(y)):
     if(y[i] in classes):
