@@ -49,9 +49,9 @@ def my_vectorizer(texts, y):
                 total_count[word] += 1
 
     for word in class_count.keys():
-        suma = sum(class_count[word])
+        S = sum(class_count[word])
         for i in range(len(class_count[word])):
-            class_count[word][i]/=suma
+            class_count[word][i] /= S
     lens = {}
     for word in count.keys():
         if(count[word] in lens):
@@ -60,6 +60,7 @@ def my_vectorizer(texts, y):
             lens[count[word]] = 1
 
     for word in count.keys():
+        """This values were found arbitrary by experementing""" 
         if (count[word] < 20):
             del(words[word])
         elif(stop_word(word) == True):
