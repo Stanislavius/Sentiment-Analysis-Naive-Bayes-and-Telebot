@@ -18,14 +18,15 @@ def load():
     y = []
     for i in range(len(files)):
         path = "data" + "/"+files[i] + "_text.txt"
-        file = open(path, mode = "r", encoding = encoding)
-        for line in file.readlines():
-            texts.append(tokenize(line))
-                
+        with open(path, mode = "r", encoding = encoding) as file:
+            for line in file.readlines():
+                texts.append(tokenize(line))
+          
         path = "data" + "/"+files[i] + "_labels.txt"
-        file = open(path, mode = "r", encoding = encoding)
-        for label in file.readlines():
-            y.append(int(label))
+        with open(path, mode = "r", encoding = encoding) as file:
+            for label in file.readlines():
+                y.append(int(label))
+            
     return texts, y
 
 def my_vectorizer(texts, y):
