@@ -6,9 +6,11 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.naive_bayes import GaussianNB
+
 import pickle
 from words_proc import *
 import copy
+from time import time
 from my_models import *
 
 def load():
@@ -66,17 +68,42 @@ def my_vectorizer(texts, y):
                 else:
                     result[i][words[word]] += 1
     return result, words
+  
+  
+def timer_func(func):
+    def wrap_func(*args, **kwargs):
+        t1 = time()
+        result = func(*args, **kwargs)
+        t2 = time()
+        print(f'Function {func.__name__!r} executed in {(t2-t1):.4f}s')
+        return result
+    return wrap_func
+  
+  
+def time_count(func):
+    def wrapper(*args, **kwargs):
+        t1 = time()
+        func(*args,  **kwargs)
+        t2 = time()
+        print("Executed in %i" % (t2-t1))
+    return wrapper
+  
+  
+@time_count
+def model_training():
+    model.fit(X_train, y_train)
+    print("Accuracy is %f" % accuracy_score(model.predict(X_test), y_test))
+    #SAVING RESULTS
+    with open('model.data', 'wb') as f:
+        pickle.dump(model, f)
+    with open('words.data', 'wb') as f:
+        pickle.dump(words, f)
 
 texts, y = load()
 X, words = my_vectorizer(texts, y)
 classes = {}
-model = GaussianNB()
+#model = GaussianNB()
 model = Naive_Bayes()
+
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state  = 76)
-model.fit(X_train, y_train)
-print("Accuracy is %f" % accuracy_score(model.predict(X_test), y_test))
-#SAVING RESULTS
-with open('model.data', 'wb') as f:
-    pickle.dump(model, f)
-with open('words.data', 'wb') as f:
-    pickle.dump(words, f)
+model_training()
