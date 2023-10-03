@@ -1,38 +1,18 @@
 import telebot
 from telebot import types
-import numpy as np
-import pickle
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
-from words_proc import tokenize
+from SA_classification import *
 
-def code_message(message_text):
-    total_words = len(words)
-    X = np.zeros(shape = (1, total_words), dtype = 'i4')
-    message_text = tokenize(message_text)
+def read_api():
+    PATH_API = "bot_api.txt"
+    with open(PATH_API, "r") as f:
+        return f.read()
     
-    for i in range(len(message_text)):
-        if message_text[i] in words:
-            X[0][list(words).index(message_text[i])] +=1
-    return X
-
-def classify_text(message_text):
-    X = code_message(message_text)
-    return model.predict(X)
-
-with open('model.data', 'rb') as f:
-    model = pickle.load(f)
-with open('words.data', 'rb') as f:
-    words = pickle.load(f)
-
-
-
-api = ''
+api = read_api()
 bot = telebot.TeleBot(api)
 
 @bot.message_handler(commands=['classify'])
 def classify(message):
     if message.chat.type == "private":
         bot.reply_to(message, classify_text(message.text[len("classify")+1:]))
-
+        
 bot.polling(non_stop=True, interval=0)
