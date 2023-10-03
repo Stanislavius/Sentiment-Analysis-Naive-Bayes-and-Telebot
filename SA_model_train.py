@@ -9,6 +9,7 @@ from sklearn.naive_bayes import GaussianNB
 import pickle
 from words_proc import *
 import copy
+from my_models import *
 
 def load():
     encoding = "latin-1"
@@ -63,13 +64,14 @@ def my_vectorizer(texts, y):
                 if(class_count[word][class_num] < threshold):
                     result[i][words[word]] = 0
                 else:
-                    result[i][words[word]] = 1
+                    result[i][words[word]] += 1
     return result, words
 
 texts, y = load()
 X, words = my_vectorizer(texts, y)
 classes = {}
 model = GaussianNB()
+model = Naive_Bayes()
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state  = 76)
 model.fit(X_train, y_train)
 print("Accuracy is %f" % accuracy_score(model.predict(X_test), y_test))
