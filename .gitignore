@@ -3,3 +3,5 @@ model.data
 words.data
 bot_api.txt
 __pycache__/SA_classification.cpython-311.pyc
+downloaded_files/test_file.txt
+results.txt
