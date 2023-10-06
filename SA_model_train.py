@@ -68,16 +68,27 @@ def my_vectorizer(texts, y):
                 else:
                     result[i][words[word]] += 1
     return result, words
-  
-  
-def timer_func(func):
-    def wrap_func(*args, **kwargs):
-        t1 = time()
-        result = func(*args, **kwargs)
-        t2 = time()
-        print(f'Function {func.__name__!r} executed in {(t2-t1):.4f}s')
-        return result
-    return wrap_func
+
+def my_label_encoding(texts, y):
+    unique = {}
+    ec = {} #0 - padding
+    temp = 1
+    for line in texts:
+        for word in line:
+            if word not in unique:
+                unique[word] = 1
+                ec[word] = temp
+                temp = temp + 1
+            else:
+                unique[word] +=1
+
+    maxlen = max([len(texts[i]) for i in range(len(texts))])
+    X = np.zeros(shape = (len(texts), maxlen))
+    for i in range(len(texts)):
+        for j in range(len(texts[i])):
+            X[i][j] = ec[texts[i][j]]
+            
+    return X, ec
   
   
 def time_count(func):
@@ -99,11 +110,19 @@ def model_training():
     with open('words.data', 'wb') as f:
         pickle.dump(words, f)
 
+        
 texts, y = load()
-X, words = my_vectorizer(texts, y)
-classes = {}
-#model = GaussianNB()
-model = Naive_Bayes()
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state  = 76)
+label_encoding = False
+if label_encoding:
+    X, words = my_label_encoding(texts, y)
+else:
+    X, words = my_vectorizer(texts, y)
+
+models = {0: GaussianNB(), 1: Naive_Bayes()}
+num = 1
+model = models[num]
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33,
+                                                    random_state  = 76)
 model_training()
