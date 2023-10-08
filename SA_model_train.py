@@ -35,6 +35,8 @@ class DataLoader:
         else:
             self.inx_file = self.inx_file + 1
             if self.inx_file < len(self.files):
+                self.fX_open.close()
+                self.fy_open.close()
                 self.fX_open = open(self.path+"/"+self.files[self.inx_file] + "_text.txt",
                             mode = "r", encoding = self.encoding)
                 self.fy_open = open(self.path+"/"+self.files[self.inx_file] + "_labels.txt",
@@ -42,8 +44,9 @@ class DataLoader:
                 x = self.fX_open.readline()
                 y = self.fy_open.readline()
                 return (x, y)
-            
             else:
+                self.fX_open.close()
+                self.fy_open.close()
                 return None
     
 def load():
