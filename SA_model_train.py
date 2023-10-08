@@ -119,7 +119,7 @@ if label_encoding:
 else:
     X, words = my_vectorizer(texts, y)
 
-models = {0: GaussianNB(), 1: Naive_Bayes()}
+models = {0: GaussianNB(), 1: NaiveBayes()}
 num = 1
 model = models[num]
 

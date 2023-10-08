@@ -1,7 +1,7 @@
 import numpy as np
 import collections
 
-class Naive_Bayes:
+class NaiveBayes:
     def __init__(self):
         self.apriori = None
         self.freq = None
