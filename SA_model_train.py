@@ -13,22 +13,46 @@ import copy
 from time import time
 from my_models import *
 
+class DataLoader:
+    def __init__(self):
+        self.encoding = "latin-1"
+        self.path = "data"
+        self.files = ["test", "train", "val"]
+        self.inx_file = 0
+        self.fX_open = open(self.path+"/"+self.files[self.inx_file] + "_text.txt",
+                            mode = "r", encoding = self.encoding)
+        self.fy_open = open(self.path+"/"+self.files[self.inx_file] + "_labels.txt",
+                            mode = "r", encoding = self.encoding)
+        
+    def __iter__(self):
+        return self
+    
+    def __next__(self):
+        x = self.fX_open.readline()
+        y = self.fy_open.readline()
+        if x != "":
+            return (x, y)
+        else:
+            self.inx_file = self.inx_file + 1
+            if self.inx_file < len(self.files):
+                self.fX_open = open(self.path+"/"+self.files[self.inx_file] + "_text.txt",
+                            mode = "r", encoding = self.encoding)
+                self.fy_open = open(self.path+"/"+self.files[self.inx_file] + "_labels.txt",
+                            mode = "r", encoding = self.encoding)
+                x = self.fX_open.readline()
+                y = self.fy_open.readline()
+                return (x, y)
+            
+            else:
+                return None
+    
 def load():
-    encoding = "latin-1"
-    path = "data"
-    files = ["test", "train", "val"]
     texts = []
     y = []
-    for i in range(len(files)):
-        path = "data" + "/"+files[i] + "_text.txt"
-        with open(path, mode = "r", encoding = encoding) as file:
-            for line in file.readlines():
-                texts.append(tokenize(line))
-          
-        path = "data" + "/"+files[i] + "_labels.txt"
-        with open(path, mode = "r", encoding = encoding) as file:
-            for label in file.readlines():
-                y.append(int(label))
+    loader = DataLoader()
+    while (new_pair := next(loader)) is not None:
+        texts.append(tokenize(new_pair[0]))
+        y.append(int(new_pair[1]))
             
     return texts, y
 
