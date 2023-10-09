@@ -19,44 +19,45 @@ class DataLoader:
         self.path = "data"
         self.files = ["test", "train", "val"]
         self.inx_file = 0
-        self.fX_open = open(self.path+"/"+self.files[self.inx_file] + "_text.txt",
-                            mode = "r", encoding = self.encoding)
-        self.fy_open = open(self.path+"/"+self.files[self.inx_file] + "_labels.txt",
-                            mode = "r", encoding = self.encoding)
+        fX_open = open(self.path + "/" + self.files[self.inx_file] + "_text.txt",
+                       mode="r", encoding=self.encoding)
+        fy_open = open(self.path + "/" + self.files[self.inx_file] + "_labels.txt",
+                       mode="r", encoding=self.encoding)
+        inx_file = 0
+        results = []
+        for i in range(len(self.files)):
+            with open(self.path + "/" + self.files[i] + "_text.txt",
+                      mode="r", encoding=self.encoding) as fx, open(self.path + "/" + self.files[i] + "_labels.txt",
+                                                                    mode="r", encoding=self.encoding) as fy:
+                while True:
+                    x = fx.readline()
+                    y = fy.readline()
+                    if x == "":
+                        break
+                    else:
+                        results.append((x, y))
+        self.results = results
+        self.i = 0
         
     def __iter__(self):
-        return self
+        return iter(self.results)
+
+    def __len__(self):
+        return len(self.results)
+
     
     def __next__(self):
-        x = self.fX_open.readline()
-        y = self.fy_open.readline()
-        if x != "":
-            return (x, y)
-        else:
-            self.inx_file = self.inx_file + 1
-            if self.inx_file < len(self.files):
-                self.fX_open.close()
-                self.fy_open.close()
-                self.fX_open = open(self.path+"/"+self.files[self.inx_file] + "_text.txt",
-                            mode = "r", encoding = self.encoding)
-                self.fy_open = open(self.path+"/"+self.files[self.inx_file] + "_labels.txt",
-                            mode = "r", encoding = self.encoding)
-                x = self.fX_open.readline()
-                y = self.fy_open.readline()
-                return (x, y)
-            else:
-                self.fX_open.close()
-                self.fy_open.close()
-                return None
+        self.i += 1
+        return self.results[self.i-1]
     
 def load():
     texts = []
     y = []
     loader = DataLoader()
-    while (new_pair := next(loader)) is not None:
+    for i in range(len(loader)):
+        new_pair = next(loader)
         texts.append(tokenize(new_pair[0]))
         y.append(int(new_pair[1]))
-            
     return texts, y
 
 def my_vectorizer(texts, y):
