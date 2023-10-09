@@ -47,6 +47,8 @@ class DataLoader:
     def __len__(self):
         return len(self.results)
 
+    def __getitem__(self, pos):
+        return self.results[pos]
     
     def __next__(self):
         self.i += 1
