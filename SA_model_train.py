@@ -54,8 +54,7 @@ def load():
     texts = []
     y = []
     loader = DataLoader()
-    for i in range(len(loader)):
-        new_pair = next(loader)
+    for new_pair in loader:
         texts.append(tokenize(new_pair[0]))
         y.append(int(new_pair[1]))
     return texts, y
