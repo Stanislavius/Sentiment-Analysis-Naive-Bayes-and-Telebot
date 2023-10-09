@@ -38,21 +38,21 @@ class DataLoader:
                         break
                     else:
                         results.append(Sample(x, y))
-        self.results = results
+        self.loaded_samples = results
         self.i = 0
         
     def __iter__(self):
-        return iter(self.results)
+        return iter(self.loaded_samples)
 
     def __len__(self):
-        return len(self.results)
+        return len(self.loaded_samples)
 
     def __getitem__(self, pos):
-        return self.results[pos]
+        return self.loaded_samples[pos]
     
     def __next__(self):
         self.i += 1
-        return self.results[self.i-1]
+        return self.loaded_samples[self.i-1]
     
 def load():
     texts = []
