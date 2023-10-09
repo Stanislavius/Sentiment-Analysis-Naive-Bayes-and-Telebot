@@ -13,23 +13,50 @@ import copy
 from time import time
 from my_models import *
 
+class DataLoader:
+    def __init__(self):
+        self.encoding = "latin-1"
+        self.path = "data"
+        self.files = ["test", "train", "val"]
+        self.inx_file = 0
+        fX_open = open(self.path + "/" + self.files[self.inx_file] + "_text.txt",
+                       mode="r", encoding=self.encoding)
+        fy_open = open(self.path + "/" + self.files[self.inx_file] + "_labels.txt",
+                       mode="r", encoding=self.encoding)
+        inx_file = 0
+        results = []
+        for i in range(len(self.files)):
+            with open(self.path + "/" + self.files[i] + "_text.txt",
+                      mode="r", encoding=self.encoding) as fx, open(self.path + "/" + self.files[i] + "_labels.txt",
+                                                                    mode="r", encoding=self.encoding) as fy:
+                while True:
+                    x = fx.readline()
+                    y = fy.readline()
+                    if x == "":
+                        break
+                    else:
+                        results.append((x, y))
+        self.results = results
+        self.i = 0
+        
+    def __iter__(self):
+        return iter(self.results)
+
+    def __len__(self):
+        return len(self.results)
+
+    
+    def __next__(self):
+        self.i += 1
+        return self.results[self.i-1]
+    
 def load():
-    encoding = "latin-1"
-    path = "data"
-    files = ["test", "train", "val"]
     texts = []
     y = []
-    for i in range(len(files)):
-        path = "data" + "/"+files[i] + "_text.txt"
-        with open(path, mode = "r", encoding = encoding) as file:
-            for line in file.readlines():
-                texts.append(tokenize(line))
-          
-        path = "data" + "/"+files[i] + "_labels.txt"
-        with open(path, mode = "r", encoding = encoding) as file:
-            for label in file.readlines():
-                y.append(int(label))
-            
+    loader = DataLoader()
+    for new_pair in loader:
+        texts.append(tokenize(new_pair[0]))
+        y.append(int(new_pair[1]))
     return texts, y
 
 def my_vectorizer(texts, y):
