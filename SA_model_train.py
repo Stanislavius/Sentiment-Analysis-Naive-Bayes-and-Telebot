@@ -28,9 +28,10 @@ class DataLoader:
         inx_file = 0
         results = []
         for i in range(len(self.files)):
-            with open(self.path + "/" + self.files[i] + "_text.txt",
-                      mode="r", encoding=self.encoding) as fx, open(self.path + "/" + self.files[i] + "_labels.txt",
-                                                                    mode="r", encoding=self.encoding) as fy:
+            with (open(self.path + "/" + self.files[i] + "_text.txt",
+                      mode="r", encoding=self.encoding) as fx,
+                  open(self.path + "/" + self.files[i] + "_labels.txt",
+                       mode="r", encoding=self.encoding) as fy):
                 while True:
                     x = fx.readline()
                     y = fy.readline()
@@ -47,8 +48,14 @@ class DataLoader:
     def __len__(self):
         return len(self.loaded_samples)
 
-    def __getitem__(self, pos):
-        return self.loaded_samples[pos]
+    def __getitem__(self, key):
+        if type(key) == int:
+            return self.loaded_samples[key]
+        elif type(key) == str:
+            if key == "X":
+                return [sample.x for sample in self.loaded_samples]
+            if key == "y":
+                return [sample.y for sample in self.loaded_samples]
     
     def __next__(self):
         self.i += 1
