@@ -13,6 +13,8 @@ import copy
 from time import time
 from my_models import *
 
+from collections import namedtuple
+Sample = namedtuple('Sample', ['x', 'y'])
 class DataLoader:
     def __init__(self):
         self.encoding = "latin-1"
@@ -35,7 +37,7 @@ class DataLoader:
                     if x == "":
                         break
                     else:
-                        results.append((x, y))
+                        results.append(Sample(x, y))
         self.results = results
         self.i = 0
         
@@ -54,9 +56,9 @@ def load():
     texts = []
     y = []
     loader = DataLoader()
-    for new_pair in loader:
-        texts.append(tokenize(new_pair[0]))
-        y.append(int(new_pair[1]))
+    for sample in loader:
+        texts.append(tokenize(sample.x))
+        y.append(int(sample.y))
     return texts, y
 
 def my_vectorizer(texts, y):
