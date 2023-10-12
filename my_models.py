@@ -84,10 +84,8 @@ class OneVsOne:
     def predict(self, X:np.array):
         predictions = [self.models[i].predict(X) for i in range(len(self.models))]
         predictions = [[self.variants[i][predictions[i][j].astype("int64")] for i in range(len(self.models))] for j in range(len(X))]
-        print(self.variants)
-        print(predictions[0], predictions[1], predictions[2])
-        result = np.zeros(shape = (self.class_num, len(X)))
+        result = np.zeros(shape = (len(X), self.class_num))
         for i in range(len(predictions)):
             for j in range(len(predictions[i])):
-                result[predictions[i][j]] += 1
-        return result.argmax(axis = 0)
+                result[i][predictions[i][j]] += 1
+        return result.argmax(axis = 1)
