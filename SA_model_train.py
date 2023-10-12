@@ -13,8 +13,10 @@ import copy
 from time import time
 from my_models import *
 
+
 from collections import namedtuple
 Sample = namedtuple('Sample', ['x', 'y'])
+
 class DataLoader:
     def __init__(self):
         self.encoding = "latin-1"
@@ -28,9 +30,10 @@ class DataLoader:
         inx_file = 0
         results = []
         for i in range(len(self.files)):
-            with open(self.path + "/" + self.files[i] + "_text.txt",
-                      mode="r", encoding=self.encoding) as fx, open(self.path + "/" + self.files[i] + "_labels.txt",
-                                                                    mode="r", encoding=self.encoding) as fy:
+            with (open(self.path + "/" + self.files[i] + "_text.txt",
+                      mode="r", encoding=self.encoding) as fx,
+                  open(self.path + "/" + self.files[i] + "_labels.txt",
+                       mode="r", encoding=self.encoding) as fy):
                 while True:
                     x = fx.readline()
                     y = fy.readline()
@@ -38,19 +41,28 @@ class DataLoader:
                         break
                     else:
                         results.append(Sample(x, y))
-        self.results = results
+
+        self.loaded_samples = results
         self.i = 0
         
     def __iter__(self):
-        return iter(self.results)
+        return iter(self.loaded_samples)
 
     def __len__(self):
-        return len(self.results)
+        return len(self.loaded_samples)
 
+    def __getitem__(self, key):
+        if type(key) == int:
+            return self.loaded_samples[key]
+        elif type(key) == str:
+            if key == "X":
+                return [sample.x for sample in self.loaded_samples]
+            if key == "y":
+                return [sample.y for sample in self.loaded_samples]
     
     def __next__(self):
         self.i += 1
-        return self.results[self.i-1]
+        return self.loaded_samples[self.i-1]
     
 def load():
     texts = []
