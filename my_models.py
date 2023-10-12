@@ -1,3 +1,5 @@
+import itertools
+
 import numpy as np
 import collections
 
@@ -48,5 +50,44 @@ class OneVSRest:
         predictions = predictions.transpose()
         return predictions.argmin(axis = 1)
 
+class OneVsOne:
+    def __init__(self, model):
+        self.model = model
 
+    def fit(self, X : np.array, y: list):
+        class_num = len(set(y))
+        models = [self.model() for i in range(sum(range(class_num)))] #or (class_num * (class_num - 1))/2
+        classes = list(set(y))
+        variants = list(itertools.product(classes, classes))
+        new_variants = []
+        for v in variants:
+            i, j = v
+            if i != j and (j, i) not in new_variants:
+                new_variants.append(v)
+        variants = new_variants
+        tmp = 0
+        for i, j in variants:
+            y_num = []
+            X_num = []
+            for k in range(len(y)):
+                if y[k] in (i, j):
+                    X_num.append(X[k])
+                    y_num.append(y[k])
+            X_num = np.array(X_num)
+            y_num = [0 if v == i else 1 for v in y_num]
+            models[tmp].fit(X_num, y_num)
+            tmp += 1
+        self.models = models
+        self.variants = variants
+        self.class_num = class_num
 
+    def predict(self, X:np.array):
+        predictions = [self.models[i].predict(X) for i in range(len(self.models))]
+        predictions = [[self.variants[i][predictions[i][j].astype("int64")] for i in range(len(self.models))] for j in range(len(X))]
+        print(self.variants)
+        print(predictions[0], predictions[1], predictions[2])
+        result = np.zeros(shape = (self.class_num, len(X)))
+        for i in range(len(predictions)):
+            for j in range(len(predictions[i])):
+                result[predictions[i][j]] += 1
+        return result.argmax(axis = 0)
