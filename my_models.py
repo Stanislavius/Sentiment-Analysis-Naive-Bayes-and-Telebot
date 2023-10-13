@@ -33,6 +33,7 @@ class NaiveBayes:
 class OneVSRest:
     def __init__(self, model):
         self.model = model
+        self.models = None
 
     def fit(self, X: np.array, y: list):
         class_num = len(set(y))
@@ -53,6 +54,8 @@ class OneVSRest:
 class OneVsOne:
     def __init__(self, model):
         self.model = model
+        self.models = None
+        self.variants = None #in order to predifine dictionary of attributes
 
     def fit(self, X: np.array, y: list):
         class_num = len(set(y))
