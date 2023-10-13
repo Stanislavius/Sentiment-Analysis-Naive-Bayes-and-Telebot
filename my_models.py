@@ -34,7 +34,7 @@ class OneVSRest:
     def __init__(self, model):
         self.model = model
 
-    def fit(self, X : np.array, y: list):
+    def fit(self, X: np.array, y: list):
         class_num = len(set(y))
         models = [self.model() for i in range(class_num)]
         for i in range(class_num):
@@ -54,27 +54,23 @@ class OneVsOne:
     def __init__(self, model):
         self.model = model
 
-    def fit(self, X : np.array, y: list):
+    def fit(self, X: np.array, y: list):
         class_num = len(set(y))
         models = [self.model() for i in range(sum(range(class_num)))] #or (class_num * (class_num - 1))/2
         classes = list(set(y))
         variants = list(itertools.product(classes, classes))
         new_variants = []
-        for v in variants:
-            i, j = v
+        for i, j in variants:
             if i != j and (j, i) not in new_variants:
-                new_variants.append(v)
+                new_variants.append((i, j))
         variants = new_variants
         tmp = 0
+        y = np.array(y)
         for i, j in variants:
-            y_num = []
-            X_num = []
-            for k in range(len(y)):
-                if y[k] in (i, j):
-                    X_num.append(X[k])
-                    y_num.append(y[k])
-            X_num = np.array(X_num)
-            y_num = [0 if v == i else 1 for v in y_num]
+            indexes_of_ij_classes = [index for index in range(len(y)) if y[index] in (i, j)]
+            X_num = X[indexes_of_ij_classes]
+            y_num = np.array(y)[indexes_of_ij_classes]
+            y_num = np.array([0 if v == i else 1 for v in y_num])
             models[tmp].fit(X_num, y_num)
             tmp += 1
         self.models = models
