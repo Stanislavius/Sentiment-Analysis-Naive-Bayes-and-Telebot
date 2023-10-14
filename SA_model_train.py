@@ -78,9 +78,7 @@ def load():
 
 
 def my_vectorizer(texts, y):
-    words, count = {}, {}
     total_count, class_count = {}, {}
-    temp = 0
     class_num = 3 #TODO: ADD COUNTING OF UNIC CLASSES INSIDE y
     for i in range(len(texts)):
         for word in texts[i]:
