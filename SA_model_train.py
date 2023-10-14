@@ -104,9 +104,9 @@ def my_vectorizer(texts, y):
     threshold = 0.45
     for i in range(len(texts)):
         for word in texts[i]:
-            if(word in words):
+            if word in words:
                 class_num = y[i]
-                if(class_count[word][class_num] < threshold):
+                if class_count[word][class_num] < threshold:
                     result[i][words[word]] = 0
                 else:
                     result[i][words[word]] += 1
