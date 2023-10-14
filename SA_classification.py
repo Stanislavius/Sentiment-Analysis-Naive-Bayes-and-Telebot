@@ -4,6 +4,7 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from words_proc import tokenize
 
+
 def code_messages(texts):
     total_words = len(words)
     X = np.zeros(shape = (len(texts), total_words), dtype = 'i4')
@@ -14,9 +15,11 @@ def code_messages(texts):
                 X[i][list(words).index(text[j])] +=1
     return X
 
+
 def classify_text(message_text):
     X = code_messages([message_text])
     return model.predict(X)
+
 
 def classify_file(file_name):
     with open(file_name, 'r') as f:
@@ -28,6 +31,7 @@ def classify_file(file_name):
         for p in predictions:
             f.write(str(p) + "\n")
     return results_name
+
 
 with open('model.data', 'rb') as f:
     model = pickle.load(f)

@@ -6,14 +6,17 @@ def read_api():
     PATH_API = "bot_api.txt"
     with open(PATH_API, "r") as f:
         return f.read()
-    
+
+
 api = read_api()
 bot = telebot.TeleBot(api)
+
 
 @bot.message_handler(commands=['classify'])
 def classify(message):
     if message.chat.type == "private":
         bot.reply_to(message, classify_text(message.text[len("classify")+1:]))
+
 
 @bot.message_handler(content_types=['document'])
 def document_handler(message):
@@ -27,5 +30,6 @@ def document_handler(message):
             new_file.write(downloaded_file)
         result_path = classify_file(file_path)
         bot.send_document(message.chat.id, open(result_path, 'rb'))
-        
+
+
 bot.polling(non_stop=True, interval=0)
