@@ -1,5 +1,4 @@
 import numpy as np
-import time
 import sklearn
 from sklearn.naive_bayes import ComplementNB
 from sklearn.feature_extraction.text import CountVectorizer
@@ -7,15 +6,18 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.naive_bayes import GaussianNB
 
+import time
 import pickle
-from words_proc import *
 import copy
+
+from words_proc import *
 from time import time
 from my_models import *
 
 
 from collections import namedtuple
 Sample = namedtuple('Sample', ['x', 'y'])
+
 
 class DataLoader:
     def __init__(self):
@@ -63,7 +65,8 @@ class DataLoader:
     def __next__(self):
         self.i += 1
         return self.loaded_samples[self.i-1]
-    
+
+
 def load():
     texts = []
     y = []
@@ -72,6 +75,7 @@ def load():
         texts.append(tokenize(sample.x))
         y.append(int(sample.y))
     return texts, y
+
 
 def my_vectorizer(texts, y):
     words, count = {}, {}
@@ -108,7 +112,9 @@ def my_vectorizer(texts, y):
                     result[i][words[word]] = 0
                 else:
                     result[i][words[word]] += 1
+
     return result, words
+
 
 def my_label_encoding(texts, y):
     unique = {}
@@ -130,8 +136,8 @@ def my_label_encoding(texts, y):
             X[i][j] = ec[texts[i][j]]
             
     return X, ec
-  
-  
+
+
 def time_count(func):
     def wrapper(*args, **kwargs):
         t1 = time()
@@ -139,8 +145,8 @@ def time_count(func):
         t2 = time()
         print("Executed in %i" % (t2-t1))
     return wrapper
-  
-  
+
+
 @time_count
 def model_training():
     model.fit(X_train, y_train)
@@ -151,9 +157,8 @@ def model_training():
     with open('words.data', 'wb') as f:
         pickle.dump(words, f)
 
-        
-texts, y = load()
 
+texts, y = load()
 label_encoding = False
 if label_encoding:
     X, words = my_label_encoding(texts, y)
