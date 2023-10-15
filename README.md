@@ -29,9 +29,9 @@ Before passing data to model in order to train it, there are some steps that nee
 7. Optionally, using n-grams. If two or more words are frequently in one sentense thay can be treated as one and it can make sense in some cases. For example: "badly want" express some strong desire for something. If treated as one word, model can be more precise when encounter it in texts. If bad and want are treated as different words, some of the meaning can be lost.
 
 After that, when we have our text in appropriate form: 
-8. Make train and test split. Usually 70% of data is for train. 10% for validation, 20% for test.
-9. Train model.
-10. Predict on test data and get accuracy score.
+1. Make train and test split. Usually 70% of data is for train. 10% for validation, 20% for test.
+2. Train model.
+3. Predict on test data and get accuracy score.
 
 For training was used dataset from [tweeteval](https://github.com/cardiffnlp/tweeteval/tree/main/datasets/sentiment). Telegram bot is used to communicate with user.
 
