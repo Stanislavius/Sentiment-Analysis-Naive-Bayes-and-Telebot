@@ -8,8 +8,9 @@
 * [Structure of project](#structure-of-project)
 
 # What it does?
-Analyses [sentiment](https://en.wikipedia.org/wiki/Sentiment_analysis) or emotional tone of a sentense (e.g. 0 - negative, 1 - positive, or it can be like 0 - joy, 1 - anger, 2 - sadness, 3 - amusement, 4 - disgust and so on and so forth).
-In this case there is three type of texts for now: 0 - negative, 1 - neutral, 2 - positive. Given text of arbitrary length, it determines if text is negative, neutral or positive.
+Analyses [sentiment](https://en.wikipedia.org/wiki/Sentiment_analysis) or emotional tone (state) of a sentense (e.g. 0 - negative, 1 - positive, or it can be like 0 - joy, 1 - anger, 2 - sadness, 3 - amusement, 4 - disgust and so on and so forth).
+In this project are used three types of texts for now: 0 - negative, 1 - neutral, 2 - positive. Given text of arbitrary length, it determines if text is negative, neutral or positive. Telegram bot is used to communicate with user.
+
 # Why?
 Sentiment analysis can be used:
 1. to automatically determine by text of user review if user is satisfied with a product;
@@ -18,7 +19,7 @@ Sentiment analysis can be used:
    
 # How?
 The analysis of the tonality of the text can be considered as a classification task. 
-Uses [Naive Bayes](https://en.wikipedia.org/wiki/Naive_Bayes_classifier) to classify sentense, it can be done by enother methods which may be implemented later.
+Uses [Naive Bayes](https://en.wikipedia.org/wiki/Naive_Bayes_classifier) to classify sentense, it can be done by another methods which may be implemented later.
 Before passing data to model in order to train it, there are some steps that need to be done:
 1. Delete any symbols from text which don't have any meaning, e.g. dots, commas, question marks, exclamation marks, semicolons etc.
 2. Lower-case all symbols in order to not work with "Word" and "word" as different words.
@@ -44,11 +45,12 @@ For training was used dataset from [tweeteval](https://github.com/cardiffnlp/twe
 6. Create file bot_api.txt in root folder of project. Write api in it. E.g.:
 
     ![image](https://github.com/Stanislavius/Sentiment-Analysis-Naive-Bayes-and-Telebot/assets/56927835/62ff7318-39ca-4cce-96d4-c3d701df6342)
-8. Run SA_bot.py
+7. Run SA_bot.py
 
 
 # How to use?
- Open chat with your bot. type /classity and write your message to classify it's sentiment.
+
+ After have done previous steps in [How to run?](#how-to-run) and bot is running, open chat with your bot. type /classity and write your message to classify it's sentiment.
 1. Type /classity and write your message to classify it's sentiment:
 
 ![image](https://github.com/Stanislavius/Sentiment-Analysis-Naive-Bayes-and-telebot-/assets/56927835/62b91d4b-937c-4e65-a0cb-57874df85d91)
