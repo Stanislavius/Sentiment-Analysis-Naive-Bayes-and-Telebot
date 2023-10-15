@@ -8,15 +8,18 @@
 * [Structure of project](#structure-of-project)
 
 # What it does?
-Analyses [sentiment](https://en.wikipedia.org/wiki/Sentiment_analysis) of a sentense (e.g. 0 - negative, 1 - positive). 
+Analyses [sentiment](https://en.wikipedia.org/wiki/Sentiment_analysis) or emotional tone of a sentense (e.g. 0 - negative, 1 - positive, or it can be like 0 - joy, 1 - anger, 2 - sadness, 3 - amusement, 4 - disgust and so on and so forth).
+In this case there is three type of texts for now: 0 - negative, 1 - neutral, 2 - positive. Given text of arbitrary length, it determines if text is negative, neutral or positive.
 # Why?
+Sentiment analysis can be used:
+1. to automatically determine by text of user review if user is satisfied with a product;
+2. to detect spam messages;
+3. to detect hate speech of message that violates rules of forum or community or chat group etc.
+   
 # How?
-Analyses [sentiment](https://en.wikipedia.org/wiki/Sentiment_analysis) of a sentense(0 - negative, 1 - neutral, 2 - positive in this case, for now). 
-Uses [Naive Bayes](https://en.wikipedia.org/wiki/Naive_Bayes_classifier) to classify sentense. 
-Natural language is the language used for human communication, in contrast to formal languages, it was not created specifically.
 The analysis of the tonality of the text can be considered as a classification task. 
-I have used naive Bayesian classifier to solve the classification problem, but it can be done by another methods.
-For training was used dataset from [tweeteval](https://github.com/cardiffnlp/tweeteval/tree/main/datasets/sentiment) . Telegram bot is used to communicate with user.
+Uses [Naive Bayes](https://en.wikipedia.org/wiki/Naive_Bayes_classifier) to classify sentense, it can be done by enother methods which may be implemented later.
+For training was used dataset from [tweeteval](https://github.com/cardiffnlp/tweeteval/tree/main/datasets/sentiment). Telegram bot is used to communicate with user.
 
 # How to run?
 1. Install Python 3.9.
@@ -28,14 +31,15 @@ For training was used dataset from [tweeteval](https://github.com/cardiffnlp/twe
 
     ![image](https://github.com/Stanislavius/Sentiment-Analysis-Naive-Bayes-and-Telebot/assets/56927835/62ff7318-39ca-4cce-96d4-c3d701df6342)
 8. Run SA_bot.py
-9. Open chat with your bot, type /classity and write your message to classify it's sentiment or send a text document where each line is a message.
+
 
 # How to use?
-/classify example:
+ Open chat with your bot. type /classity and write your message to classify it's sentiment.
+1. Type /classity and write your message to classify it's sentiment:
 
 ![image](https://github.com/Stanislavius/Sentiment-Analysis-Naive-Bayes-and-telebot-/assets/56927835/62b91d4b-937c-4e65-a0cb-57874df85d91)
 
-Send document example: 
+2. Or send a text document in txt format where each line is a message.
 
 ![image](https://github.com/Stanislavius/Sentiment-Analysis-Naive-Bayes-and-Telebot/assets/56927835/93a6c649-b9de-4aec-a5cc-d157f2de9518) 
 
