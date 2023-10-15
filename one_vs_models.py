@@ -22,6 +22,10 @@ class OneVSRest:
         predictions = predictions.transpose()
         return predictions.argmin(axis = 1)
 
+    def __repr__(self):
+        return "OneVSRest()"
+
+
 class OneVsOne:
     def __init__(self, model):
         self.model = model
@@ -59,3 +63,6 @@ class OneVsOne:
             for j in range(len(predictions[i])):
                 result[i][predictions[i][j]] += 1
         return result.argmax(axis = 1)
+    
+    def __repr__(self):
+        return "OneVSOne()"
