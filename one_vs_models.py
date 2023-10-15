@@ -33,7 +33,7 @@ class OneVSRest:
         return "OneVSRest()"
 
 
-class OneVsOne:
+class OneVSOne:
     """ OneVSOne strategy. Uses (n*(n-1))/2 classifiers, where n number of classes. Each of them try to classify
             if sample corresponds to certain class or to some another, grouping  them into pairs.
             The result is the class with the largest score.
