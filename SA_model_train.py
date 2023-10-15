@@ -13,6 +13,7 @@ import copy
 from words_proc import *
 from time import time
 from my_models import *
+from one_vs_models import *
 
 
 from collections import namedtuple
@@ -163,7 +164,8 @@ if label_encoding:
 else:
     X, words = my_vectorizer(texts, y)
 
-models = {0: GaussianNB(), 1: NaiveBayes()}
+models = {0: GaussianNB(), 1: NaiveBayes(), 2: OneVSOne(NaiveBayes), 3: OneVSRest(NaiveBayes)}
+
 num = 1
 model = models[num]
 

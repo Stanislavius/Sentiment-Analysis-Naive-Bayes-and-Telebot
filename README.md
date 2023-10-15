@@ -77,3 +77,4 @@ Files and their main function:
 7. words.data - words which were used to train and their positions.
 8. words_proc.py - some functions to process text data.
 9. my_models.py - contains models written by me, Naive Bayes only for now.
+10. one_vs_models.py - containts OneVsRest and OneVsOne classes, which implement strategies for multiclass classificators based on binary classificators.

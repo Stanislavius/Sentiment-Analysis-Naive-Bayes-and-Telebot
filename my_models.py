@@ -1,7 +1,13 @@
 import numpy as np
 import collections
 
+
 class NaiveBayes:
+    """ Just simple Naive Bayes classifier, which uses simple Bayes' theorem to classify and nothing more beyond it.
+        Methods:
+            fit(X :np.array, y: list) - to train on data.
+            predict(X: np.array) - to predict to which classes corresponds X.
+    """
     def __init__(self):
         self.apriori = None
         self.freq = None
@@ -23,3 +29,6 @@ class NaiveBayes:
         for i in range(len(X)):
             result[i] = ((self.freq * X[i]).sum(axis = 1) * self.apriori).argmax()
         return result
+
+    def __repr__(self):
+        return "NaiveBayes()"
