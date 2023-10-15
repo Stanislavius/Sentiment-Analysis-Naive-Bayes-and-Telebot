@@ -2,6 +2,13 @@ import numpy as np
 import itertools
 
 class OneVSRest:
+    """ OneVSRest strategy. Uses n classifiers, where n number of classes. Each of them try to classify
+        if sample corresponds to certain class or to all others. The result is the class with the largest score.
+            Methods:
+                __init__(self, model) - where is model is pointer to class of some model, which have methods fit and predict.
+                fit(X :np.array, y: list) - to train on data.
+                predict(X: np.array) - to predict to which classes corresponds X.
+    """
     def __init__(self, model):
         self.model = model
         self.models = None
@@ -27,6 +34,14 @@ class OneVSRest:
 
 
 class OneVsOne:
+    """ OneVSOne strategy. Uses (n*(n-1))/2 classifiers, where n number of classes. Each of them try to classify
+            if sample corresponds to certain class or to some another, grouping  them into pairs.
+            The result is the class with the largest score.
+                Methods:
+                    __init__(self, model) - where is model is pointer to class of some model, which have methods fit and predict.
+                    fit(X :np.array, y: list) - to train on data.
+                    predict(X: np.array) - to predict to which classes corresponds X.
+    """
     def __init__(self, model):
         self.model = model
         self.models = None
@@ -63,6 +78,6 @@ class OneVsOne:
             for j in range(len(predictions[i])):
                 result[i][predictions[i][j]] += 1
         return result.argmax(axis = 1)
-    
+
     def __repr__(self):
         return "OneVSOne()"
