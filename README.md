@@ -43,10 +43,21 @@ For training was used dataset from [tweeteval](https://github.com/cardiffnlp/twe
 ## How to run?
 1. Install Python 3.9 and Python libraries: sklearn, NLTK, pickle, telebot, NumPy. If you are using pip, open command prompt and type "pip3 install <library name">
 2. Run nltk_download.py to download dependencies. Run SA_model_train.py to train model on included train data.
-3. Write to https://t.me/BotFather, create bot and get token for him. Create file bot_api.txt in root folder of project. Write token recieved from BotFather in it. E.g.:
+
+   Options of SA_model_train.py
+    * -h - help
+    * -m - model selection
+        GNB: Gaussian Naive Bayes;
+        NB: simple Naive Bayes;
+        OVO(NB) - OneVSOne(NaiveBayes);
+        OVS(NB) - OneVSRest(NaiveBayes).
+    * -e - choosing of encoding of data files
+    * -i - choosing folder with data
+   
+4. Write to https://t.me/BotFather, create bot and get token for him. Create file bot_api.txt in root folder of project. Write token recieved from BotFather in it. E.g.:
 
     ![image](https://github.com/Stanislavius/Sentiment-Analysis-Naive-Bayes-and-Telebot/assets/56927835/62ff7318-39ca-4cce-96d4-c3d701df6342)
-4. Run SA_bot.py
+5. Run SA_bot.py
 
 
 ## How to use?
