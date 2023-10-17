@@ -26,6 +26,7 @@ DATASETS = ["sentiment"]
 DIVISIONS = ["test", "train", "val"]  # for now support only for this structure of data
 DEFAULT_MODEL = "NB"
 
+
 def construct_path(path_to_data: str, dataset_name: str, division_name: str, XorY: bool):
     result = path_to_data + "/" + dataset_name + "/" + division_name
     if XorY:
@@ -38,59 +39,35 @@ def construct_path_mapping(path_to_data: str, dataset_name: str):
     return path_to_data + "/" + dataset_name + "/" + "mapping.txt"
 
 
-class DataLoader:
-    def __init__(self, dataset_name="sentiment"):
-        read_samples = []
-        for division in DIVISIONS:
-            with (open(construct_path(PATH_TO_DATASETS, dataset_name, division, True),
-                       mode="r", encoding=ENCODING) as fx,
-                  open(construct_path(PATH_TO_DATASETS, dataset_name, division, False),
-                       mode="r", encoding=ENCODING) as fy):
-                while True:
-                    x = fx.readline()
-                    y = fy.readline()
-                    if x == "":
-                        break
-                    else:
-                        read_samples.append(Sample(x, y))
+def get_samples(dataset_name="sentiment"):
+    read_samples = []
+    for division in DIVISIONS:
+        with (open(construct_path(PATH_TO_DATASETS, dataset_name, division, True),
+                   mode="r", encoding=ENCODING) as fx,
+              open(construct_path(PATH_TO_DATASETS, dataset_name, division, False),
+                   mode="r", encoding=ENCODING) as fy):
+            while True:
+                x = fx.readline()
+                y = fy.readline()
+                if x == "":
+                    break
+                else:
+                    read_samples.append(Sample(x, y))
 
-        self.map_classes = {}
-        with open(construct_path_mapping(PATH_TO_DATASETS, dataset_name), mode="r", encoding=ENCODING) as f:
-            for line in f.readlines():
-                self.map_classes[int(line[:line.index("\t")])] = line[line.index("\t") + 1:-1]
-        self.read_samples = read_samples
-        self.i = 0
-
-    def __iter__(self):
-        return iter(self.read_samples)
-
-    def __len__(self):
-        return len(self.read_samples)
-
-    def __getitem__(self, key):
-        if type(key) == int:
-            return self.read_samples[key]
-        elif type(key) == str:
-            if key == "X":
-                return [sample.x for sample in self.read_samples]
-            if key == "y":
-                return [sample.y for sample in self.read_samples]
-
-    def __next__(self):
-        self.i += 1
-        return self.read_samples[self.i - 1]
-
-    def get_mapping(self):
-        return self.map_classes
+    map_classes = {}
+    with open(construct_path_mapping(PATH_TO_DATASETS, dataset_name), mode="r", encoding=ENCODING) as f:
+        for line in f.readlines():
+            map_classes[int(line[:line.index("\t")])] = line[line.index("\t") + 1:-1]
+    return iter(read_samples), map_classes
 
 
 def load():
     texts, y = [], []
-    loader = DataLoader()
-    for sample in loader:
+    samples, mapping = get_samples()
+    for sample in samples:
         texts.append(lemmatize(tokenize(sample.x)))
         y.append(int(sample.y))
-    return texts, y, loader.get_mapping()
+    return texts, y, mapping
 
 
 def deletion_rule(count, class_count):  # to delete words if they are not passing some criteria
