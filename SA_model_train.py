@@ -172,6 +172,15 @@ def main():
     # Long options
     long_options = ["Help", "Model", "Encoding"]
     model = NaiveBayes()
+    help_message = """
+    -h - help
+    -m - model selection 
+        GNB: Gaussian Naive Bayes;
+        NB: simple Naive Bayes;
+        OVO(NB) - OneVSOne(NaiveBayes);
+        OVS(NB) - OneVSRest(NaiveBayes)
+    -e - choosing of encoding of data files
+    """
     try:
         # Parsing argument
         arguments, values = getopt.getopt(argumentList, options, long_options)
@@ -180,7 +189,8 @@ def main():
         for currentArgument, currentValue in arguments:
 
             if currentArgument in ("-h", "--Help"):
-                print("Displaying Help")
+                print(help_message)
+                exit()
 
             elif currentArgument in ("-m", "--Model"):
                 print("Using %s as model" % models[currentValue])
