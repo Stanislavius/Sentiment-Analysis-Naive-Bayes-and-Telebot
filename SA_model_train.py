@@ -165,6 +165,8 @@ def model_training(model, X_train, y_train, X_test, y_test, words, mapping):
 
 
 def main():
+    global PATH_TO_DATASETS
+    global ENCODING
     # total arguments
     argumentList = sys.argv[1:]
     models = {"GNB": GaussianNB(), "NB": NaiveBayes(), "OVO(NB)": OneVSOne(NaiveBayes),
