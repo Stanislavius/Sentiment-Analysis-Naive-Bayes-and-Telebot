@@ -1,23 +1,26 @@
 ## Sentiment-Analysis-Naive-Bayes-and-telebot
 # Contents
-* [What it does?](#what-it-does)
-* [Why?](#why)
-* [How?](#how)
-* [How to run?](#how-to-run)
-* [How to use?](#how-to-use)
+* [Description](#description)
+   * [What it does?](#what-it-does)
+   * [Why?](#why)
+   * [How?](#how)
+* [Usage](#usage)
+   * [How to run?](#how-to-run)
+   * [How to use?](#how-to-use)
 * [Structure of project](#structure-of-project)
 
-# What it does?
+# Description
+## What it does?
 Analyses [sentiment](https://en.wikipedia.org/wiki/Sentiment_analysis) or emotional tone (state) of a sentense (e.g. 0 - negative, 1 - positive, or it can be like 0 - joy, 1 - anger, 2 - sadness, 3 - amusement, 4 - disgust and so on and so forth).
 In this project are used three types of texts for now: 0 - negative, 1 - neutral, 2 - positive. Given text of arbitrary length, it determines if text is negative, neutral or positive. Telegram bot is used to communicate with user.
 
-# Why?
+## Why?
 Sentiment analysis can be used:
 1. to automatically determine by text of user review if user is satisfied with a product;
 2. to detect spam messages;
 3. to detect hate speech of message that violates rules of forum or community or chat group etc.
    
-# How?
+## How?
 The analysis of the tonality of the text can be considered as a classification task. 
 Uses [Naive Bayes](https://en.wikipedia.org/wiki/Naive_Bayes_classifier) to classify sentense, it can be done by another methods which may be implemented later.
 Before passing data to model in order to train it, there are some steps that need to be done:
@@ -36,19 +39,17 @@ After that, when we have our text in appropriate form:
 
 For training was used dataset from [tweeteval](https://github.com/cardiffnlp/tweeteval/tree/main/datasets/sentiment). Telegram bot is used to communicate with user.
 
-# How to run?
-1. Install Python 3.9.
-2. Install Python libraries: sklearn, NLTK, pickle, telebot, NumPy. If you are using pip, open command prompt and type "pip3 install <library name">
-3. Run nltk_download.py to download dependencies
-4. Run SA_model_train.py to train model on included train data.
-5. Write to https://t.me/BotFather, create bot and get token for him.
-6. Create file bot_api.txt in root folder of project. Write api in it. E.g.:
+# Usage
+## How to run?
+1. Install Python 3.9 and Python libraries: sklearn, NLTK, pickle, telebot, NumPy. If you are using pip, open command prompt and type "pip3 install <library name">
+2. Run nltk_download.py to download dependencies. Run SA_model_train.py to train model on included train data.
+3. Write to https://t.me/BotFather, create bot and get token for him. Create file bot_api.txt in root folder of project. Write token recieved from BotFather in it. E.g.:
 
     ![image](https://github.com/Stanislavius/Sentiment-Analysis-Naive-Bayes-and-Telebot/assets/56927835/62ff7318-39ca-4cce-96d4-c3d701df6342)
-7. Run SA_bot.py
+4. Run SA_bot.py
 
 
-# How to use?
+## How to use?
 
  After have done previous steps in [How to run?](#how-to-run) and bot is running, open chat with your bot. type /classity and write your message to classify it's sentiment.
 1. Type /classity and write your message to classify it's sentiment:
