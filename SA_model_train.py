@@ -168,9 +168,9 @@ def main():
     argumentList = sys.argv[1:]
     models = {"GNB": GaussianNB(), "NB": NaiveBayes(), "OVO(NB)": OneVSOne(NaiveBayes), "OVS(NB)": OneVSRest(NaiveBayes)}
     # Options
-    options = "hm:e:"
+    options = "hm:e:i:"
     # Long options
-    long_options = ["Help", "Model", "Encoding"]
+    long_options = ["Help", "Model", "Encoding", "Input location"]
     model = NaiveBayes()
     help_message = """
     -h - help
@@ -178,8 +178,9 @@ def main():
         GNB: Gaussian Naive Bayes;
         NB: simple Naive Bayes;
         OVO(NB) - OneVSOne(NaiveBayes);
-        OVS(NB) - OneVSRest(NaiveBayes)
+        OVS(NB) - OneVSRest(NaiveBayes).
     -e - choosing of encoding of data files
+    -i - choosing folder with data
     """
     try:
         # Parsing argument
@@ -199,6 +200,10 @@ def main():
             elif currentArgument in ("-e", "--Encoding"):
                 print("Using %s encoding" % currentValue)
                 ENCODING = currentValue
+
+            elif currentArgument in ('i', "--Input location"):
+                PATH_TO_DATASETS = currentValue
+
 
     except getopt.error as err:
         print(str(err))
