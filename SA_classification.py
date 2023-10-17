@@ -18,7 +18,7 @@ def code_messages(texts):
 
 def classify_text(message_text):
     X = code_messages([message_text])
-    return model.predict(X)
+    return mapping[model.predict(X)[0]]
 
 
 def classify_file(file_name):
@@ -29,7 +29,7 @@ def classify_file(file_name):
     results_name = "results.txt"
     with open(results_name, 'w') as f:
         for p in predictions:
-            f.write(str(p) + "\n")
+            f.write(str(mapping[p]) + "\n")
     return results_name
 
 
@@ -37,3 +37,5 @@ with open('model.data', 'rb') as f:
     model = pickle.load(f)
 with open('words.data', 'rb') as f:
     words = pickle.load(f)
+with open('mapping.data', 'rb') as f:
+    mapping = pickle.load(f)

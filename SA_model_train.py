@@ -35,6 +35,10 @@ def construct_path(path_to_data: str, dataset_name: str, division_name: str, Xor
         return result + "_labels.txt"
 
 
+def construct_path_mapping(path_to_data: str, dataset_name: str):
+    return path_to_data + "/" + dataset_name + "/" + "mapping.txt"
+
+
 class DataLoader:
     def __init__(self, dataset_name="sentiment"):
         read_samples = []
@@ -51,6 +55,10 @@ class DataLoader:
                     else:
                         read_samples.append(Sample(x, y))
 
+        self.map_classes = {}
+        with open(construct_path_mapping(PATH_TO_DATASETS, dataset_name), mode ="r", encoding=ENCODING) as f:
+            for line in f.readlines():
+                self.map_classes[int(line[:line.index("\t")])] = line[line.index("\t")+1:-1]
         self.read_samples = read_samples
         self.i = 0
 
@@ -73,6 +81,9 @@ class DataLoader:
         self.i += 1
         return self.read_samples[self.i - 1]
 
+    def get_mapping(self):
+        return self.map_classes
+
 
 def load():
     texts = []
@@ -81,7 +92,7 @@ def load():
     for sample in loader:
         texts.append(tokenize(sample.x))
         y.append(int(sample.y))
-    return texts, y
+    return texts, y, loader.get_mapping()
 
 
 def my_vectorizer(texts, y):
@@ -104,7 +115,7 @@ def my_vectorizer(texts, y):
              if stop_word(word) == False
              if max(class_count[word]) >= 0.45
              if min(class_count[word]) <= 0.25
-             }  # deletion words under these criterias
+             }  # deletion words under these criteria
 
     words = {word: i for i, word in enumerate(count.keys())}
     result = np.zeros(shape=(len(texts), len(words)), dtype='i4')
@@ -154,7 +165,7 @@ def time_count(func):
 
 
 @time_count
-def model_training(model, X_train, y_train, X_test, y_test, words):
+def model_training(model, X_train, y_train, X_test, y_test, words, mapping):
     model.fit(X_train, y_train)
     print("Accuracy is %f" % accuracy_score(model.predict(X_test), y_test))
     # SAVING RESULTS
@@ -162,6 +173,8 @@ def model_training(model, X_train, y_train, X_test, y_test, words):
         pickle.dump(model, f)
     with open('words.data', 'wb') as f:
         pickle.dump(words, f)
+    with open('mapping.data', 'wb') as f:
+        pickle.dump(mapping, f)
 
 def main():
     # total arguments
@@ -208,7 +221,7 @@ def main():
     except getopt.error as err:
         print(str(err))
 
-    texts, y = load()
+    texts, y, mapping = load()
     label_encoding = False
     if label_encoding:
         X, words = my_label_encoding(texts, y)
@@ -218,7 +231,7 @@ def main():
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33,
                                                         random_state=76)
-    model_training(model, X_train, y_train, X_test, y_test, words)
+    model_training(model, X_train, y_train, X_test, y_test, words, mapping)
 
 
 if __name__ == "__main__":
