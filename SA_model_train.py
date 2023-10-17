@@ -8,7 +8,6 @@ from sklearn.naive_bayes import GaussianNB
 
 import time
 import pickle
-import copy
 import sys
 import getopt
 
@@ -56,9 +55,9 @@ class DataLoader:
                         read_samples.append(Sample(x, y))
 
         self.map_classes = {}
-        with open(construct_path_mapping(PATH_TO_DATASETS, dataset_name), mode ="r", encoding=ENCODING) as f:
+        with open(construct_path_mapping(PATH_TO_DATASETS, dataset_name), mode="r", encoding=ENCODING) as f:
             for line in f.readlines():
-                self.map_classes[int(line[:line.index("\t")])] = line[line.index("\t")+1:-1]
+                self.map_classes[int(line[:line.index("\t")])] = line[line.index("\t") + 1:-1]
         self.read_samples = read_samples
         self.i = 0
 
@@ -86,8 +85,7 @@ class DataLoader:
 
 
 def load():
-    texts = []
-    y = []
+    texts, y = [], []
     loader = DataLoader()
     for sample in loader:
         texts.append(tokenize(sample.x))
@@ -95,31 +93,43 @@ def load():
     return texts, y, loader.get_mapping()
 
 
-def my_vectorizer(texts, y):
+def deletion_rule(count, class_count):  # to delete words if they are not passing some criteria
+    new_count = {word: c for word, c in count.items()
+                 if c >= 5
+                 if stop_word(word) is False
+                 if max(class_count[word]) >= 0.45
+                 if min(class_count[word]) <= 0.25
+                 }  # deletion words under these criteria
+    return new_count
+
+
+def bag_of_words(texts, y, rule=deletion_rule, threshold=0.45):
+    """
+    Transforms texts into bag-of-words form (array of shape (N_samples, N_words))
+    texts: list of texts
+    y: list of actual classes
+    rule: rule under which words would be deleted from dataset
+    threshold: if word appears in class less than threshold times - it is deleted.
+    return: bag of words representation and dictionary with keys-words and values-their code
+    """
     total_count, class_count = {}, {}
     class_num = len(set(y))
     for i in range(len(texts)):
         for word in texts[i]:
-            if (word not in class_count):
+            if word not in class_count:
                 class_count[word] = [0 for c in range(class_num)]
                 class_count[word][y[i]] = 1  # MARK THAT WORD APPEARS IN THIS CLASS
             else:
                 class_count[word][y[i]] += 1
 
     count = {k: sum(class_count[k]) for k in class_count.keys()}
-    total_count = copy.deepcopy(count)
     for word in class_count.keys():
-        class_count[word] = [class_count[word][i] / total_count[word] for i in range(len(class_count[word]))]
+        class_count[word] = [class_count[word][i] / count[word] for i in range(len(class_count[word]))]
 
-    count = {word: c for word, c in count.items() if c >= 20
-             if stop_word(word) == False
-             if max(class_count[word]) >= 0.45
-             if min(class_count[word]) <= 0.25
-             }  # deletion words under these criteria
+    count = rule(count, class_count)
 
     words = {word: i for i, word in enumerate(count.keys())}
     result = np.zeros(shape=(len(texts), len(words)), dtype='i4')
-    threshold = 0.45
     for i in range(len(texts)):
         for word in texts[i]:
             if word in words:
@@ -132,7 +142,7 @@ def my_vectorizer(texts, y):
     return result, words
 
 
-def my_label_encoding(texts, y):
+def label_encoding(texts, y):
     unique = {}
     ec = {}  # 0 - padding
     temp = 1
@@ -176,10 +186,12 @@ def model_training(model, X_train, y_train, X_test, y_test, words, mapping):
     with open('mapping.data', 'wb') as f:
         pickle.dump(mapping, f)
 
+
 def main():
     # total arguments
     argumentList = sys.argv[1:]
-    models = {"GNB": GaussianNB(), "NB": NaiveBayes(), "OVO(NB)": OneVSOne(NaiveBayes), "OVS(NB)": OneVSRest(NaiveBayes)}
+    models = {"GNB": GaussianNB(), "NB": NaiveBayes(), "OVO(NB)": OneVSOne(NaiveBayes),
+              "OVS(NB)": OneVSRest(NaiveBayes)}
     # Options
     options = "hm:e:i:"
     # Long options
@@ -217,17 +229,15 @@ def main():
             elif currentArgument in ('i', "--Input location"):
                 PATH_TO_DATASETS = currentValue
 
-
     except getopt.error as err:
         print(str(err))
 
     texts, y, mapping = load()
-    label_encoding = False
-    if label_encoding:
-        X, words = my_label_encoding(texts, y)
+    encode_as_label = False
+    if encode_as_label:
+        X, words = label_encoding(texts, y)
     else:
-        X, words = my_vectorizer(texts, y)
-
+        X, words = bag_of_words(texts, y)
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33,
                                                         random_state=76)
