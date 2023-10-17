@@ -2,13 +2,13 @@ import numpy as np
 import pickle
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
-from words_proc import tokenize
+from words_proc import tokenize, lemmatize
 
 
 def code_messages(texts):
     total_words = len(words)
     X = np.zeros(shape = (len(texts), total_words), dtype = 'i4')
-    texts = [tokenize(text) for text in texts]
+    texts = [lemmatize(tokenize(text)) for text in texts]
     for i, text in enumerate(texts):
         for j in range(len(text)):
             if text[j] in words:

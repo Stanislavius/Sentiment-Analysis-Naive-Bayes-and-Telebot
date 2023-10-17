@@ -26,6 +26,7 @@ DATASETS = ["sentiment"]
 DIVISIONS = ["test", "train", "val"]  # for now support only for this structure of data
 DEFAULT_MODEL = "NB"
 
+
 def construct_path(path_to_data: str, dataset_name: str, division_name: str, XorY: bool):
     result = path_to_data + "/" + dataset_name + "/" + division_name
     if XorY:
@@ -88,7 +89,7 @@ def load():
     texts, y = [], []
     loader = DataLoader()
     for sample in loader:
-        texts.append(tokenize(sample.x))
+        texts.append(lemmatize(tokenize(sample.x)))
         y.append(int(sample.y))
     return texts, y, loader.get_mapping()
 
