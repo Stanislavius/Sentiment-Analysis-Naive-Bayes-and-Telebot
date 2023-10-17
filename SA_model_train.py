@@ -88,7 +88,7 @@ def load():
     texts, y = [], []
     loader = DataLoader()
     for sample in loader:
-        texts.append(tokenize(sample.x))
+        texts.append(lemmatize(tokenize(sample.x)))
         y.append(int(sample.y))
     return texts, y, loader.get_mapping()
 
