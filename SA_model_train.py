@@ -28,28 +28,27 @@ DEFAULT_MODEL = "NB"
 
 
 class PathConstructor:
-    def __init__(self, path_to_data, dataset_name):
-        self.path_to_data = path_to_data
-        self.dataset_name = dataset_name
-
-    def construct_path(self, division_name: str, XorY: bool):
-        result = self.path_to_data + "/" + self.dataset_name + "/" + division_name
+    @staticmethod
+    def construct_path(path_to_data: str, dataset_name: str, division_name: str, XorY: bool):
+        result = path_to_data + "/" + dataset_name + "/" + division_name
         if XorY:
             return result + "_text.txt"
         else:
             return result + "_labels.txt"
 
-    def construct_path_mapping(self):
-        return self.path_to_data + "/" + self.dataset_name + "/" + "mapping.txt"
+    @staticmethod
+    def construct_path_mapping(path_to_data: str, dataset_name: str):
+        return path_to_data + "/" + dataset_name + "/" + "mapping.txt"
 
 
 class DataLoader:
-    def __init__(self, path_c):
+    @staticmethod
+    def get_samples(dataset_name="sentiment"):
         read_samples = []
         for division in DIVISIONS:
-            with (open(path_c.construct_path(division, True),
+            with (open(PathConstructor.construct_path(PATH_TO_DATASETS, dataset_name, division, True),
                        mode="r", encoding=ENCODING) as fx,
-                  open(path_c.construct_path(division, False),
+                  open(PathConstructor.construct_path(PATH_TO_DATASETS, dataset_name, division, False),
                        mode="r", encoding=ENCODING) as fy):
                 while True:
                     x = fx.readline()
@@ -59,47 +58,22 @@ class DataLoader:
                     else:
                         read_samples.append(Sample(x, y))
 
-        self.map_classes = {}
-        with open(path_c.construct_path_mapping(), mode="r", encoding=ENCODING) as f:
+        map_classes = {}
+        with open(PathConstructor.construct_path_mapping(PATH_TO_DATASETS, dataset_name), mode="r", encoding=ENCODING) as f:
             for line in f.readlines():
-                self.map_classes[int(line[:line.index("\t")])] = line[line.index("\t") + 1:-1]
-        self.read_samples = read_samples
-        self.i = 0
-
-    def __iter__(self):
-        return iter(self.read_samples)
-
-    def __len__(self):
-        return len(self.read_samples)
-
-    def __getitem__(self, key):
-        if type(key) == int:
-            return self.read_samples[key]
-        elif type(key) == str:
-            if key == "X":
-                return [sample.x for sample in self.read_samples]
-            if key == "y":
-                return [sample.y for sample in self.read_samples]
-
-    def __next__(self):
-        self.i += 1
-        return self.read_samples[self.i - 1]
-
-    def get_mapping(self):
-        return self.map_classes
+                map_classes[int(line[:line.index("\t")])] = line[line.index("\t") + 1:-1]
+        return iter(read_samples), map_classes
 
 
 class DataPreparation:
-    def __init__(self, data_loader, lemmatizator=lemmatize):
-        self.data_loader = data_loader
-        self.word_processor = lemmatizator
-
-    def load(self):
+    @staticmethod
+    def load(loader):
         texts, y = [], []
-        for sample in self.data_loader:
+        samples, mapping = loader.get_samples()
+        for sample in samples:
             texts.append(lemmatize(tokenize(sample.x)))
             y.append(int(sample.y))
-        return texts, y, self.data_loader.get_mapping()
+        return texts, y, mapping
 
     @staticmethod
     def deletion_rule(count, class_count):  # to delete words if they are not passing some criteria
@@ -243,8 +217,7 @@ def main():
     except getopt.error as err:
         print(str(err))
 
-    data_preparation = DataPreparation(DataLoader(PathConstructor(PATH_TO_DATASETS, "sentiment")))
-    texts, y, mapping = data_preparation.load()
+    texts, y, mapping = DataPreparation.load(DataLoader)
     encode_as_label = False
     if encode_as_label:
         X, words = DataPreparation.label_encoding(texts, y)
