@@ -19,53 +19,57 @@ from one_vs_models import *
 from collections import namedtuple
 Sample = namedtuple('Sample', ['x', 'y'])
 
+ENCODING = "latin-1"
+PATH_TO_DATASETS = "data"
+DATASETS = ["Sentiment"]
+DIVISIONS = ["test", "train", "val"]
+
+
+def construct_path(path_to_data: str, dataset_name: str, division_name: str, XorY: bool):
+    result = path_to_data + "/" + dataset_name + "/" + division_name
+    if XorY:
+        return result + "_text.txt"
+    else:
+        return result + "_labels.txt"
+
 
 class DataLoader:
-    def __init__(self):
-        self.encoding = "latin-1"
-        self.path = "data"
-        self.files = ["test", "train", "val"]
-        self.inx_file = 0
-        fX_open = open(self.path + "/" + self.files[self.inx_file] + "_text.txt",
-                       mode="r", encoding=self.encoding)
-        fy_open = open(self.path + "/" + self.files[self.inx_file] + "_labels.txt",
-                       mode="r", encoding=self.encoding)
-        inx_file = 0
-        results = []
-        for i in range(len(self.files)):
-            with (open(self.path + "/" + self.files[i] + "_text.txt",
-                      mode="r", encoding=self.encoding) as fx,
-                  open(self.path + "/" + self.files[i] + "_labels.txt",
-                       mode="r", encoding=self.encoding) as fy):
+    def __init__(self, dataset_name="sentiment"):
+        read_samples = []
+        for division in DIVISIONS:
+            with (open(construct_path(PATH_TO_DATASETS, dataset_name, division, True),
+                       mode="r", encoding=ENCODING) as fx,
+                  open(construct_path(PATH_TO_DATASETS, dataset_name, division, False),
+                       mode="r", encoding=ENCODING) as fy):
                 while True:
                     x = fx.readline()
                     y = fy.readline()
                     if x == "":
                         break
                     else:
-                        results.append(Sample(x, y))
+                        read_samples.append(Sample(x, y))
 
-        self.loaded_samples = results
+        self.read_samples = read_samples
         self.i = 0
         
     def __iter__(self):
-        return iter(self.loaded_samples)
+        return iter(self.read_samples)
 
     def __len__(self):
-        return len(self.loaded_samples)
+        return len(self.read_samples)
 
     def __getitem__(self, key):
         if type(key) == int:
-            return self.loaded_samples[key]
+            return self.read_samples[key]
         elif type(key) == str:
             if key == "X":
-                return [sample.x for sample in self.loaded_samples]
+                return [sample.x for sample in self.read_samples]
             if key == "y":
-                return [sample.y for sample in self.loaded_samples]
+                return [sample.y for sample in self.read_samples]
     
     def __next__(self):
         self.i += 1
-        return self.loaded_samples[self.i-1]
+        return self.read_samples[self.i-1]
 
 
 def load():
