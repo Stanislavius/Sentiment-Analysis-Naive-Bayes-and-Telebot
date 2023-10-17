@@ -24,7 +24,7 @@ ENCODING = "latin-1"
 PATH_TO_DATASETS = "data"
 DATASETS = ["sentiment"]
 DIVISIONS = ["test", "train", "val"]  # for now support only for this structure of data
-
+DEFAULT_MODEL = "NB"
 
 def construct_path(path_to_data: str, dataset_name: str, division_name: str, XorY: bool):
     result = path_to_data + "/" + dataset_name + "/" + division_name
@@ -196,7 +196,7 @@ def main():
     options = "hm:e:i:"
     # Long options
     long_options = ["Help", "Model", "Encoding", "Input location"]
-    model = NaiveBayes()
+    model = models[DEFAULT_MODEL]
     help_message = """
     -h - help
     -m - model selection 
