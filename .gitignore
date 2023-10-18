@@ -7,3 +7,4 @@ downloaded_files/test_file.txt
 results.txt
 *.xml
 *.data
+*.iml
