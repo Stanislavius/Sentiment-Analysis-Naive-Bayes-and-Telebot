@@ -169,7 +169,7 @@ def main():
     global ENCODING
     # total arguments
     argumentList = sys.argv[1:]
-    models = {"GNB": GaussianNB(), "NB": NaiveBayes(), "OVO(NB)": OneVSOne(NaiveBayes),
+    models = {"GNB": GaussianNaiveBayes(), "NB": NaiveBayes(), "OVO(NB)": OneVSOne(NaiveBayes),
               "OVS(NB)": OneVSRest(NaiveBayes)}
     # Options
     options = "hm:e:i:"
