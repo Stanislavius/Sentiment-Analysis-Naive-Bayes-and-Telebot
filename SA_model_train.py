@@ -63,27 +63,31 @@ class DataLoader:
         with open(path_c.construct_path_mapping(), mode="r", encoding=ENCODING) as f:
             for line in f.readlines():
                 self.map_classes[int(line[:line.index("\t")])] = line[line.index("\t") + 1:-1]
-        self.read_samples = read_samples
+        self.__samples = tuple(read_samples)
         self.i = 0
 
     def __iter__(self):
-        return iter(self.read_samples)
+        return iter(self.__samples)
+
+    @property # this way samples are completely immutable, but can be read
+    def samples(self):
+        return self.__samples
 
     def __len__(self):
-        return len(self.read_samples)
+        return len(self.__samples)
 
     def __getitem__(self, key):
         if type(key) == int:
-            return self.read_samples[key]
+            return self.__samples[key]
         elif type(key) == str:
             if key == "X":
-                return [sample.x for sample in self.read_samples]
+                return [sample.x for sample in self.__samples]
             if key == "y":
-                return [sample.y for sample in self.read_samples]
+                return [sample.y for sample in self.__samples]
 
     def __next__(self):
         self.i += 1
-        return self.read_samples[self.i - 1]
+        return self.__[self.i - 1]
 
     def get_mapping(self):
         return self.map_classes
