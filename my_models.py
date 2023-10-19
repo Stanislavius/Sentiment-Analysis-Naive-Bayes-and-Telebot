@@ -31,7 +31,7 @@ class ClassicalNaiveBayes:
         result = np.zeros(shape=(len(X)))
         for i in range(len(X)):
             freq = self.freq[:, X[i] != 0.0]
-            freq[freq == 0.0] = 0.000000000001
+            freq[freq == 0.0] = ClassicalNaiveBayes.ZERO_REPLACER
             result[i] = ((freq * X[i][X[i] != 0.0]).prod(axis=1) * self.apriori).argmax()
         return result
 
