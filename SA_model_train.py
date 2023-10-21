@@ -9,7 +9,8 @@ from sklearn.naive_bayes import GaussianNB
 import time
 import pickle
 import sys
-import getopt
+import argparse
+
 
 from words_proc import *
 from time import time
@@ -19,6 +20,9 @@ from one_vs_models import *
 from collections import namedtuple
 
 Sample = namedtuple('Sample', ['x', 'y'])
+
+encoding = None
+path_to_datasets = None
 
 ENCODING = "latin-1"
 PATH_TO_DATASETS = "data"
@@ -165,51 +169,25 @@ def model_training(model, X_train, y_train, X_test, y_test, words, mapping):
 
 
 def main():
-    global PATH_TO_DATASETS
-    global ENCODING
-    # total arguments
-    argumentList = sys.argv[1:]
+    global path_to_datasets
+    global encoding
     models = {"GNB": GaussianNaiveBayes(), "NB": NaiveBayes(), "OVO(NB)": OneVSOne(NaiveBayes),
               "OVS(NB)": OneVSRest(NaiveBayes)}
-    # Options
-    options = "hm:e:i:"
-    # Long options
-    long_options = ["Help", "Model", "Encoding", "Input location"]
-    model = models[DEFAULT_MODEL]
-    help_message = """
-    -h - help
-    -m - model selection 
-        GNB: Gaussian Naive Bayes;
-        NB: simple Naive Bayes;
-        OVO(NB) - OneVSOne(NaiveBayes);
-        OVS(NB) - OneVSRest(NaiveBayes).
-    -e - choosing of encoding of data files
-    -i - choosing folder with data
-    """
-    try:
-        # Parsing argument
-        arguments, values = getopt.getopt(argumentList, options, long_options)
 
-        # checking each argument
-        for currentArgument, currentValue in arguments:
-
-            if currentArgument in ("-h", "--Help"):
-                print(help_message)
-                exit()
-
-            elif currentArgument in ("-m", "--Model"):
-                print("Using %s as model" % models[currentValue])
-                model = models[currentValue]
-
-            elif currentArgument in ("-e", "--Encoding"):
-                print("Using %s encoding" % currentValue)
-                ENCODING = currentValue
-
-            elif currentArgument in ('i', "--Input location"):
-                PATH_TO_DATASETS = currentValue
-
-    except getopt.error as err:
-        print(str(err))
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-m", "--model",
+                        help="""model selection:
+                                    GNB: Gaussian Naive Bayes;
+                                    NB: simple Naive Bayes;
+                                    OVO(NB) - OneVSOne(NaiveBayes);
+                                    OVS(NB) - OneVSRest(NaiveBayes).""",
+                        default=DEFAULT_MODEL)
+    parser.add_argument("-e", "--encoding", help = "choosing of encoding of data files", default=ENCODING)
+    parser.add_argument("-p","--path_to_data", help="choosing folder with data", default=PATH_TO_DATASETS)
+    args = parser.parse_args()
+    model = models[args.model]
+    encoding = args.encoding
+    path_to_datasets = args.path_to_data
 
     texts, y, mapping = load()
     encode_as_label = False
