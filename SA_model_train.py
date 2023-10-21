@@ -46,10 +46,10 @@ def construct_path_mapping(path_to_data: str, dataset_name: str):
 def get_samples(dataset_name="sentiment"):
     read_samples = []
     for division in DIVISIONS:
-        with (open(construct_path(PATH_TO_DATASETS, dataset_name, division, True),
-                   mode="r", encoding=ENCODING) as fx,
-              open(construct_path(PATH_TO_DATASETS, dataset_name, division, False),
-                   mode="r", encoding=ENCODING) as fy):
+        with (open(construct_path(path_to_datasets, dataset_name, division, True),
+                   mode="r", encoding=encoding) as fx,
+              open(construct_path(path_to_datasets, dataset_name, division, False),
+                   mode="r", encoding=encoding) as fy):
             while True:
                 x = fx.readline()
                 y = fy.readline()
@@ -59,7 +59,7 @@ def get_samples(dataset_name="sentiment"):
                     read_samples.append(Sample(x, y))
 
     map_classes = {}
-    with open(construct_path_mapping(PATH_TO_DATASETS, dataset_name), mode="r", encoding=ENCODING) as f:
+    with open(construct_path_mapping(path_to_datasets, dataset_name), mode="r", encoding=encoding) as f:
         for line in f.readlines():
             map_classes[int(line[:line.index("\t")])] = line[line.index("\t") + 1:-1]
     return iter(read_samples), map_classes
